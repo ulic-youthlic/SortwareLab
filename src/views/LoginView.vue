@@ -56,11 +56,11 @@ function handleLogin() {
   }
 
   if (radio.value == 3) {
-    axios.post("http://localhost:8080/admin/login", qs.stringify(data))
+    axios.post("http://127.0.0.1:5000/api/login/admin", qs.stringify(data))
         .then(handleSuccess)
         .catch(handleError);
   } else if (radio.value == 6) {
-    axios.post(`http://localhost:8080/user/login/${username.value}`, qs.stringify(data))
+    axios.post("http://127.0.0.7:5000/api/login/user", qs.stringify(data))
         .then(handleSuccess)
         .catch(handleError);
   }
