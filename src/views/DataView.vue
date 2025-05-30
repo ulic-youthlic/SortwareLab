@@ -413,7 +413,9 @@ const fetchData = async () => {
     }
 
     // 调用后端API获取数据
-    const response = await axios.get('http://127.0.0.1:5000/api/game-data/${username.value}', { params });
+    const response = await axios.get('http://127.0.0.1:5000/api/game-data/${username.value}'
+    <!-- , { params } -->
+    );
 
     if (response.data.success) {
       gameData.value = response.data.records;
