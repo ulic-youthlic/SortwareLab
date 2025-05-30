@@ -59,7 +59,7 @@ function handleLogin() {
         .then(handleSuccess)
         .catch(handleError);
   } else if (radio.value == 6) {
-    axios.post(`http://127.0.0.1:5000/api/login/user`, data)
+    axios.post("http://127.0.0.1:5000/api/login/user", data)
         .then(handleSuccess)
         .catch(handleError);
   }
