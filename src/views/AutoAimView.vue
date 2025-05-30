@@ -118,7 +118,7 @@ const targetTracking = ref(true);
 const toggleAutoAim = async (isEnabled) => {
   try {
     // 向后端发送开启/关闭指令
-    const response = await axios.post('http://127.0.0.1:5000/api/auto-aim/username=${username.value}', {
+    const response = await axios.post('http://127.0.0.1:5000/api/autoaim/set', {
       username: username.value,
       enabled: isEnabled,
       // sensitivity: sensitivity.value,

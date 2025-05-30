@@ -1,3 +1,71 @@
+ <script setup lang="ts">
+ import { ref } from 'vue'
+ import { useRouter } from 'vue-router';
+ import axios from 'axios'
+ import { ElMessage, ElNotification } from 'element-plus';
+ 
+ let username = ref('')
+ let password = ref('')
+ const router = useRouter()
+ const radio = ref(3)
+ const isLoading = ref(false)
+ 
+ function handleLogin() {
+   if (!username.value || !password.value) {
+     ElMessage.error('用户名和密码不能为空！');
+     return;
+   }
+ 
+   isLoading.value = true;
+ 
+   let data = {
+     username: username.value,
+     password: password.value
+   }
+ 
+   const handleSuccess = (res) => {
+     if (res.data.code == 200) {//
+       sessionStorage.setItem("username", data.username);
+       ElNotification.success({
+         title: '登录成功',
+         message: `欢迎回来，${username.value}！`,
+         duration: 2000,
+         offset: 70
+       });
+ 
+       // 路由跳转
+       setTimeout(() => {
+         if (radio.value == 3) {
+           // router.push('/admin/home');
+           router.push(`/${username.value}/main`);
+         } else {
+           router.push(`/${username.value}/main`);
+         }
+       }, 800);
+     } else {
+       ElMessage.error('登录失败：' + (res.data.message || '用户名或密码错误'));
+     }
+     isLoading.value = false;
+   }
+ 
+   const handleError = (err) => {
+     console.error(err);
+     ElMessage.error('登录请求失败：' + (err.response?.data?.message || '服务器错误'));
+     isLoading.value = false;
+   }
+ 
+   if (radio.value == 3) {
+     axios.post("http://127.0.0.1:5000/api/login/admin", data)
+         .then(handleSuccess)
+         .catch(handleError);
+   } else if (radio.value == 6) {
+    axios.post("http://127.0.0.1:5000/api/login/user", data)
+         .then(handleSuccess)
+         .catch(handleError);
+   }
+ }
+ </script>
+ 
 <template>
   <div class="login-page">
     <!-- 游戏主题背景 -->
