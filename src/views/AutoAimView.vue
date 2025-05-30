@@ -155,8 +155,8 @@ const goToMain = () => {
 onMounted(async () => {
   try {
     // 从后端获取当前状态
-    const response = await axios.get(`http://127.0.0.1:5000/api/auto-aim/status?username=${username.value}`);
-    if (response.data.success) {
+    const response = await axios.get(`http://127.0.0.1:5000/api/autoaim/status?username=${username.value}`);
+    if (response.status == 200) {
       isAutoAimEnabled.value = response.data.enabled;
       autoAimStatus.value = response.data.enabled ? '运行中' : '已停用';
       // sensitivity.value = response.data.sensitivity || 6;
