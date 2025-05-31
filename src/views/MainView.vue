@@ -32,7 +32,7 @@
     </div>
 
     <div class="features-grid">
-      <div class="feature-card" @click="navigateTo('/weapon-analysis')">
+      <div class="feature-card" @click="navigateTo('/autoaim')">
         <div class="feature-icon">🔫</div>
         <h3>自动瞄准</h3>
         <p>辅助自动瞄准敌人并开火</p>
@@ -44,7 +44,7 @@
         <p>根据地图或视觉信息自动探路</p>
       </div>
 
-      <div class="feature-card" @click="navigateTo('/performance')">
+      <div class="feature-card" @click="navigateTo('/data')">
         <div class="feature-icon">📊</div>
         <h3>数据分析</h3>
         <p>游戏表现数据可视化</p>
@@ -71,8 +71,8 @@ import { useRouter, useRoute } from 'vue-router';
 export default {
   setup() {
     const router = useRouter();
-    const lastLogin = ref('2023-10-15 21:45');
-    const lastUpdate = ref('2023-10-16 09:30');
+    const lastLogin = ref('2025-06-01 21:45');
+    const lastUpdate = ref('2025-06-01 09:30');
     const avatarInitials = ref('GP');
     const route = useRoute();
     const username = ref(route.params.username || '');

@@ -40,45 +40,45 @@
         </el-switch>
       </div>
 
-      <div class="settings-panel">
-        <h3>瞄准设置</h3>
-        <div class="slider-group">
-          <div class="slider-item">
-            <label>瞄准灵敏度</label>
-            <el-slider v-model="sensitivity" :min="1" :max="10" :step="1" show-stops />
-            <span>{{ sensitivity }}/10</span>
-          </div>
-          <div class="slider-item">
-            <label>目标锁定强度</label>
-            <el-slider v-model="lockStrength" :min="1" :max="10" :step="1" show-stops />
-            <span>{{ lockStrength }}/10</span>
-          </div>
-        </div>
+<!--      <div class="settings-panel">-->
+<!--        <h3>瞄准设置</h3>-->
+<!--        <div class="slider-group">-->
+<!--          <div class="slider-item">-->
+<!--            <label>瞄准灵敏度</label>-->
+<!--            <el-slider v-model="sensitivity" :min="1" :max="10" :step="1" show-stops />-->
+<!--            <span>{{ sensitivity }}/10</span>-->
+<!--          </div>-->
+<!--          <div class="slider-item">-->
+<!--            <label>目标锁定强度</label>-->
+<!--            <el-slider v-model="lockStrength" :min="1" :max="10" :step="1" show-stops />-->
+<!--            <span>{{ lockStrength }}/10</span>-->
+<!--          </div>-->
+<!--        </div>-->
 
-        <div class="toggle-group">
-          <el-checkbox v-model="headshotPriority" label="优先瞄准头部" border />
-          <el-checkbox v-model="autoFire" label="自动开火" border />
-          <el-checkbox v-model="targetTracking" label="目标追踪" border />
-        </div>
-      </div>
+<!--        <div class="toggle-group">-->
+<!--          <el-checkbox v-model="headshotPriority" label="优先瞄准头部" border />-->
+<!--          <el-checkbox v-model="autoFire" label="自动开火" border />-->
+<!--          <el-checkbox v-model="targetTracking" label="目标追踪" border />-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div class="stats-panel">
-        <div class="stat-card">
-          <div class="stat-icon">🎯</div>
-          <h4>命中率提升</h4>
-          <p>+42%</p>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">⚡</div>
-          <h4>反应时间</h4>
-          <p>0.12s</p>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">🏆</div>
-          <h4>胜率提升</h4>
-          <p>+27%</p>
-        </div>
-      </div>
+<!--      <div class="stats-panel">-->
+<!--        <div class="stat-card">-->
+<!--          <div class="stat-icon">🎯</div>-->
+<!--          <h4>命中率提升</h4>-->
+<!--          <p>+42%</p>-->
+<!--        </div>-->
+<!--        <div class="stat-card">-->
+<!--          <div class="stat-icon">⚡</div>-->
+<!--          <h4>反应时间</h4>-->
+<!--          <p>0.12s</p>-->
+<!--        </div>-->
+<!--        <div class="stat-card">-->
+<!--          <div class="stat-icon">🏆</div>-->
+<!--          <h4>胜率提升</h4>-->
+<!--          <p>+27%</p>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
 
     <!-- 页脚 -->
@@ -113,14 +113,14 @@ const targetTracking = ref(true);
 const toggleAutoAim = async (isEnabled) => {
   try {
     // 向后端发送开启/关闭指令
-    const response = await axios.post('/api/autoaim', {
+    const response = await axios.post('http://127.0.0.1:5000/api/auto-aim/username=${username.value}', {
       username: username.value,
       enabled: isEnabled,
-      sensitivity: sensitivity.value,
-      lockStrength: lockStrength.value,
-      headshotPriority: headshotPriority.value,
-      autoFire: autoFire.value,
-      targetTracking: targetTracking.value
+      // sensitivity: sensitivity.value,
+      // lockStrength: lockStrength.value,
+      // headshotPriority: headshotPriority.value,
+      // autoFire: autoFire.value,
+      // targetTracking: targetTracking.value
     });
 
     if (response.data.success) {
@@ -145,12 +145,12 @@ const toggleAutoAim = async (isEnabled) => {
 onMounted(async () => {
   try {
     // 从后端获取当前状态
-    const response = await axios.get(`/api/autoaim/status?username=${username.value}`);
+    const response = await axios.get(`http://127.0.0.1:5000/api/auto-aim/status?username=${username.value}`);
     if (response.data.success) {
       isAutoAimEnabled.value = response.data.enabled;
       autoAimStatus.value = response.data.enabled ? '运行中' : '已停用';
-      sensitivity.value = response.data.sensitivity || 6;
-      lockStrength.value = response.data.lockStrength || 7;
+      // sensitivity.value = response.data.sensitivity || 6;
+      // lockStrength.value = response.data.lockStrength || 7;
     }
   } catch (error) {
     console.error('获取自动瞄准状态失败:', error);

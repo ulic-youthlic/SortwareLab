@@ -27,6 +27,12 @@ const router = createRouter({
             component: () => import('../views/AutoAimView.vue'),
             props: true // 允许将路由参数作为 props 传递
         },
+        {
+            path: '/:username/data', // 修改为动态路径参数
+            name: 'DataView',
+            component: () => import('../views/DataView.vue'),
+            props: true // 允许将路由参数作为 props 传递
+        },
     ]
 })
 

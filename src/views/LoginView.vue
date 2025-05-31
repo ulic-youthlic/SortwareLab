@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router';
-import qs from 'querystring'
 import axios from 'axios'
 import { ElMessage, ElNotification } from 'element-plus';
 
@@ -25,7 +24,7 @@ function handleLogin() {
   }
 
   const handleSuccess = (res) => {
-    if (1) {// res.data.code == 200
+    if (res.data.code == 200) {//
       sessionStorage.setItem("username", data.username);
       ElNotification.success({
         title: '登录成功',
@@ -40,7 +39,7 @@ function handleLogin() {
           // router.push('/admin/home');
           router.push(`/${username.value}/main`);
         } else {
-          router.push(`/user/${username.value}`);
+          router.push(`/${username.value}/main`);
         }
       }, 800);
     } else {
@@ -56,11 +55,11 @@ function handleLogin() {
   }
 
   if (radio.value == 3) {
-    axios.post("http://localhost:8080/admin/login", qs.stringify(data))
+    axios.post("http://127.0.0.1:5000/api/login/admin", data)
         .then(handleSuccess)
         .catch(handleError);
   } else if (radio.value == 6) {
-    axios.post(`http://localhost:8080/user/login/${username.value}`, qs.stringify(data))
+    axios.post(`http://127.0.0.1:5000/api/login/user`, data)
         .then(handleSuccess)
         .catch(handleError);
   }
@@ -144,11 +143,11 @@ function handleLogin() {
           <div class="stats-info">
             <div class="stat-item">
               <el-icon><User /></el-icon>
-              <span>今日登录: 1,245人</span>
+              <span>今日登录: 人</span>
             </div>
             <div class="stat-item">
               <el-icon><Trophy /></el-icon>
-              <span>在线玩家: 368人</span>
+              <span>在线玩家: 人</span>
             </div>
           </div>
         </div>
