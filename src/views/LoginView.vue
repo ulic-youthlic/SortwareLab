@@ -24,7 +24,7 @@ function handleLogin() {
   }
 
   const handleSuccess = (res) => {
-    if (res.data.code == 200) {//
+    if (res.data.code == 200) {
       sessionStorage.setItem("username", data.username);
       ElNotification.success({
         title: '登录成功',

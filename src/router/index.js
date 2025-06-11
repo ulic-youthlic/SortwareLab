@@ -6,32 +6,37 @@ const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
         {
+            path: '/',
+            redirect: '/login'
+        },
+        {
             path: '/login',
             name: 'login',
             component: LoginView
         },
-        // {
-        //     path: '/main',
-        //     name: 'main',
-        //     component: MainView
-        // }
         {
-            path: '/:username/main', // 修改为动态路径参数
+            path: '/:username/main',
             name: 'MainView',
             component: () => import('../views/MainView.vue'),
             props: true // 允许将路由参数作为 props 传递
         },
         {
-            path: '/:username/autoaim', // 修改为动态路径参数
+            path: '/:username/autoaim',
             name: 'AutoAimView',
             component: () => import('../views/AutoAimView.vue'),
-            props: true // 允许将路由参数作为 props 传递
+            props: true
         },
         {
-            path: '/:username/data', // 修改为动态路径参数
+            path: '/:username/data',
             name: 'DataView',
             component: () => import('../views/DataView.vue'),
-            props: true // 允许将路由参数作为 props 传递
+            props: true
+        },
+        {
+            path: '/:username/history',
+            name: 'HistoryView',
+            component: () => import('../views/HistoryView.vue'),
+            props: true
         },
     ]
 })

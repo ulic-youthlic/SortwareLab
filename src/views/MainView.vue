@@ -32,25 +32,25 @@
     </div>
 
     <div class="features-grid">
-      <div class="feature-card" @click="navigateTo('/autoaim')">
+      <div class="feature-card" @click="navigateTo(username + '/autoaim')">
         <div class="feature-icon">🔫</div>
         <h3>自动瞄准</h3>
         <p>辅助自动瞄准敌人并开火</p>
       </div>
 
-      <div class="feature-card" @click="navigateTo('/tactics-library')">
+      <div class="feature-card" @click="navigateTo(username + '/tactics-library')">
         <div class="feature-icon">🗺️</div>
         <h3>智能寻路</h3>
         <p>根据地图或视觉信息自动探路</p>
       </div>
 
-      <div class="feature-card" @click="navigateTo('/data')">
+      <div class="feature-card" @click="navigateTo(username + '/data')">
         <div class="feature-icon">📊</div>
         <h3>数据分析</h3>
         <p>游戏表现数据可视化</p>
       </div>
 
-      <div class="feature-card" @click="navigateTo('/training')">
+      <div class="feature-card" @click="navigateTo(username + '/history')">
         <div class="feature-icon">🏋️</div>
         <h3>历史回放</h3>
         <p>可查看录制的历史回放</p>
