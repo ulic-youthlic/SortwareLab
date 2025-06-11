@@ -1,71 +1,3 @@
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router';
-import axios from 'axios'
-import { ElMessage, ElNotification } from 'element-plus';
-
-let username = ref('')
-let password = ref('')
-const router = useRouter()
-const radio = ref(3)
-const isLoading = ref(false)
-
-function handleLogin() {
-  if (!username.value || !password.value) {
-    ElMessage.error('用户名和密码不能为空！');
-    return;
-  }
-
-  isLoading.value = true;
-
-  let data = {
-    username: username.value,
-    password: password.value
-  }
-
-  const handleSuccess = (res) => {
-    if (res.data.code == 200) {
-      sessionStorage.setItem("username", data.username);
-      ElNotification.success({
-        title: '登录成功',
-        message: `欢迎回来，${username.value}！`,
-        duration: 2000,
-        offset: 70
-      });
-
-      // 路由跳转
-      setTimeout(() => {
-        if (radio.value == 3) {
-          // router.push('/admin/home');
-          router.push(`/${username.value}/main`);
-        } else {
-          router.push(`/${username.value}/main`);
-        }
-      }, 800);
-    } else {
-      ElMessage.error('登录失败：' + (res.data.message || '用户名或密码错误'));
-    }
-    isLoading.value = false;
-  }
-
-  const handleError = (err) => {
-    console.error(err);
-    ElMessage.error('登录请求失败：' + (err.response?.data?.message || '服务器错误'));
-    isLoading.value = false;
-  }
-
-  if (radio.value == 3) {
-    axios.post("http://127.0.0.1:5000/api/login/admin", data)
-        .then(handleSuccess)
-        .catch(handleError);
-  } else if (radio.value == 6) {
-    axios.post(`http://127.0.0.1:5000/api/login/user`, data)
-        .then(handleSuccess)
-        .catch(handleError);
-  }
-}
-</script>
-
 <template>
   <div class="login-page">
     <!-- 游戏主题背景 -->
@@ -74,7 +6,7 @@ function handleLogin() {
       <div v-for="i in 30" :key="i" class="particle"></div>
     </div>
 
-    <!-- 登录表单容器 -->
+    <!-- 登录/注册表单容器 -->
     <div class="login-container">
       <!-- 游戏主题头部 -->
       <div class="game-header">
@@ -86,8 +18,26 @@ function handleLogin() {
         <p class="game-tagline">精准分析 · 战术优化 · 竞技提升</p>
       </div>
 
+      <!-- 表单切换标签 -->
+      <div class="form-tabs">
+        <div
+            class="tab-item"
+            :class="{ 'active': currentTab === 'login' }"
+            @click="currentTab = 'login'"
+        >
+          登录
+        </div>
+        <div
+            class="tab-item"
+            :class="{ 'active': currentTab === 'register' }"
+            @click="currentTab = 'register'"
+        >
+          注册
+        </div>
+      </div>
+
       <!-- 登录表单 -->
-      <div class="login-form">
+      <div class="login-form" v-show="currentTab === 'login'">
         <el-form :model="form" label-position="top">
           <el-form-item label="用户名">
             <el-input
@@ -136,8 +86,8 @@ function handleLogin() {
 
         <div class="login-footer">
           <div class="quick-links">
+            <a href="#" @click.prevent="currentTab = 'register'">注册新账号</a>
             <a href="#">忘记密码?</a>
-            <a href="#">注册新账号</a>
             <a href="#">联系管理员</a>
           </div>
           <div class="stats-info">
@@ -149,6 +99,84 @@ function handleLogin() {
               <el-icon><Trophy /></el-icon>
               <span>在线玩家: 人</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 注册表单 -->
+      <div class="register-form" v-show="currentTab === 'register'">
+        <el-form :model="registerForm" label-position="top">
+          <el-form-item label="用户名" :rules="[
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { min: 3, max: 20, message: '用户名长度在3-20个字符之间', trigger: 'blur' }
+          ]">
+            <el-input
+                v-model="registerUsername"
+                placeholder="请输入游戏ID或账号"
+                clearable
+                class="input-item"
+            >
+              <template #prefix>
+                <el-icon><User /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="密码" :rules="[
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 6, message: '密码长度至少6位', trigger: 'blur' }
+          ]">
+            <el-input
+                v-model="registerPassword"
+                type="password"
+                placeholder="请输入密码"
+                show-password
+                class="input-item"
+            >
+              <template #prefix>
+                <el-icon><Lock /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="确认密码" :rules="[
+            { required: true, message: '请确认密码', trigger: 'blur' },
+            { validator: validatePassword, trigger: 'blur' }
+          ]">
+            <el-input
+                v-model="confirmPassword"
+                type="password"
+                placeholder="请再次输入密码"
+                show-password
+                class="input-item"
+            >
+              <template #prefix>
+                <el-icon><Lock /></el-icon>
+              </template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="用户角色" class="role-selector">
+            <el-radio-group v-model="registerRole">
+              <el-radio :value="6" size="large" border>玩家</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-button
+              type="primary"
+              @click="handleRegister"
+              class="register-btn"
+              :loading="isRegistering"
+          >
+            {{ isRegistering ? '注册中...' : '创建账号' }}
+          </el-button>
+        </el-form>
+
+        <div class="register-footer">
+          <div class="quick-links">
+            <a href="#" @click.prevent="currentTab = 'login'">已有账号? 登录</a>
+            <a href="#">忘记密码?</a>
+            <a href="#">联系管理员</a>
           </div>
         </div>
       </div>
@@ -166,6 +194,153 @@ function handleLogin() {
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, reactive, watch } from 'vue'
+import { useRouter } from 'vue-router';
+import axios from 'axios'
+import { ElMessage, ElNotification, ElForm } from 'element-plus';
+
+const router = useRouter()
+
+// 登录相关数据
+const username = ref('')
+const password = ref('')
+const radio = ref(6) // 默认选择玩家角色
+const isLoading = ref(false)
+
+// 注册相关数据
+const registerUsername = ref('')
+const registerPassword = ref('')
+const confirmPassword = ref('')
+const registerRole = ref(6) // 注册默认为玩家角色
+const isRegistering = ref(false)
+
+// 当前显示的表单（登录或注册）
+const currentTab = ref('login')
+
+// 表单验证
+const validatePassword = (rule: any, value: string, callback: any) => {
+  if (value === '') {
+    callback(new Error('请确认密码'));
+  } else if (value !== registerPassword.value) {
+    callback(new Error('两次输入的密码不一致'));
+  } else {
+    callback();
+  }
+};
+
+// 登录处理
+function handleLogin() {
+  if (!username.value || !password.value) {
+    ElMessage.error('用户名和密码不能为空！');
+    return;
+  }
+
+  isLoading.value = true;
+
+  let data = {
+    username: username.value,
+    password: password.value
+  }
+
+  const handleSuccess = (res: any) => {
+    if (res.data.code == 200) {
+      sessionStorage.setItem("username", data.username);
+      ElNotification.success({
+        title: '登录成功',
+        message: `欢迎回来，${username.value}！`,
+        duration: 2000,
+        offset: 70
+      });
+
+      // 路由跳转
+      setTimeout(() => {
+        if (radio.value == 3) {
+          router.push(`/${username.value}/main`);
+        } else {
+          router.push(`/${username.value}/main`);
+        }
+      }, 800);
+    } else {
+      ElMessage.error('登录失败：' + (res.data.message || '用户名或密码错误'));
+    }
+    isLoading.value = false;
+  }
+
+  const handleError = (err: any) => {
+    console.error(err);
+    ElMessage.error('登录请求失败：' + (err.response?.data?.message || '服务器错误'));
+    isLoading.value = false;
+  }
+
+  if (radio.value == 3) {
+    axios.post("http://127.0.0.1:5000/api/login/admin", data)
+        .then(handleSuccess)
+        .catch(handleError);
+  } else if (radio.value == 6) {
+    axios.post(`http://127.0.0.1:5000/api/login/user`, data)
+        .then(handleSuccess)
+        .catch(handleError);
+  }
+}
+
+// 注册处理
+function handleRegister() {
+  // 表单验证
+  if (!registerUsername.value || !registerPassword.value || !confirmPassword.value) {
+    ElMessage.error('请填写所有必填字段！');
+    return;
+  }
+
+  if (registerPassword.value !== confirmPassword.value) {
+    ElMessage.error('两次输入的密码不一致！');
+    return;
+  }
+
+  isRegistering.value = true;
+
+  let data = {
+    username: registerUsername.value,
+    password: registerPassword.value,
+    role: registerRole.value
+  }
+
+  const handleSuccess = (res: any) => {
+    if (res.data.code == 200) {
+      ElNotification.success({
+        title: '注册成功',
+        message: '您的账号已创建成功，请登录！',
+        duration: 2000,
+        offset: 70
+      });
+
+      // 注册成功后自动切换到登录页面
+      setTimeout(() => {
+        currentTab.value = 'login';
+        // 清空注册表单
+        registerUsername.value = '';
+        registerPassword.value = '';
+        confirmPassword.value = '';
+      }, 1500);
+    } else {
+      ElMessage.error('注册失败：' + (res.data.message || '服务器错误'));
+    }
+    isRegistering.value = false;
+  }
+
+  const handleError = (err: any) => {
+    console.error(err);
+    ElMessage.error('注册请求失败：' + (err.response?.data?.message || '服务器错误'));
+    isRegistering.value = false;
+  }
+
+  // 发送注册请求
+  axios.post("http://127.0.0.1:5000/api/register", data)
+      .then(handleSuccess)
+      .catch(handleError);
+}
+</script>
 
 <style scoped>
 .login-page {
@@ -305,7 +480,43 @@ function handleLogin() {
   margin-top: 5px;
 }
 
-.login-form {
+/* 表单切换标签 */
+.form-tabs {
+  display: flex;
+  margin: 0 30px;
+  border-bottom: 1px solid rgba(80, 120, 200, 0.3);
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 15px 0;
+  cursor: pointer;
+  font-weight: 500;
+  color: #a0c0ff;
+  transition: all 0.3s;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #70a0ff;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #70a0ff;
+}
+
+.tab-item:hover {
+  color: #70a0ff;
+}
+
+.login-form, .register-form {
   padding: 30px;
 }
 
@@ -365,7 +576,7 @@ function handleLogin() {
   background: rgba(80, 120, 200, 0.15);
 }
 
-.login-btn {
+.login-btn, .register-btn {
   width: 100%;
   height: 48px;
   font-size: 16px;
@@ -377,17 +588,17 @@ function handleLogin() {
   margin-top: 10px;
 }
 
-.login-btn:hover {
+.login-btn:hover, .register-btn:hover {
   background: linear-gradient(to right, #5070d0, #7090f0);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(64, 96, 192, 0.4);
 }
 
-.login-btn:active {
+.login-btn:active, .register-btn:active {
   transform: translateY(1px);
 }
 
-.login-footer {
+.login-footer, .register-footer {
   margin-top: 30px;
   padding-top: 20px;
   border-top: 1px solid rgba(80, 120, 200, 0.2);

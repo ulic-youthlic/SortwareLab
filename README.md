@@ -84,3 +84,7 @@ http://127.0.0.1:5000/api/game-data/${username.value}
     "totalRecords": 25
 }
 ```
+
+### /src/view/HistoryView.vue
+
+新增历史回放功能
