@@ -27,6 +27,12 @@ const router = createRouter({
             props: true
         },
         {
+            path: '/:username/searchroad',
+            name: 'SearchRoadView',
+            component: () => import('../views/SearchRoadView.vue'),
+            props: true
+        },
+        {
             path: '/:username/data',
             name: 'DataView',
             component: () => import('../views/DataView.vue'),

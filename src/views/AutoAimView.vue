@@ -9,12 +9,15 @@
           <p>智能辅助 · 精准锁定 · 竞技提升</p>
         </div>
       </div>
-      <div class="user-area">
-        <div class="user-info">
-          <h3>玩家: {{ username }}</h3>
-          <p>当前状态: {{ autoAimStatus }}</p>
-        </div>
-      </div>
+<!--      <div class="user-area">-->
+<!--        <div class="user-info">-->
+<!--          <h3>玩家: {{ username }}</h3>-->
+<!--          <p>当前状态: {{ autoAimStatus }}</p>-->
+<!--        </div>-->
+<!--      </div>-->
+      <el-button class="back-button" type="primary" circle @click="goToMain">
+        <el-icon><ArrowLeft /></el-icon>
+      </el-button>
     </div>
 
     <!-- 主控制区 -->
@@ -90,12 +93,14 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
+import { ArrowLeft } from '@element-plus/icons-vue';
 
 // 获取路由参数中的用户名
 const route = useRoute();
+const router = useRouter();
 const username = ref(route.params.username || '未知用户');
 
 // 自动瞄准状态
@@ -141,6 +146,11 @@ const toggleAutoAim = async (isEnabled) => {
   }
 };
 
+// 添加返回主页面方法
+const goToMain = () => {
+  router.push(`/${username.value}/main`);
+};
+
 // 初始化时检查状态
 onMounted(async () => {
   try {
@@ -172,6 +182,16 @@ onMounted(async () => {
   font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
   display: flex;
   flex-direction: column;
+}
+
+.user-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* 调整用户信息与返回按钮之间的间距 */
+}
+
+.user-area {
+  margin-right: 0; /* 移除原有的右边距 */
 }
 
 .header {
@@ -452,6 +472,16 @@ onMounted(async () => {
   font-size: 14px;
   border-top: 1px solid rgba(80, 120, 200, 0.2);
   margin-top: 30px;
+}
+
+.back-button {
+  margin-right: 10px;
+  background: rgba(100, 150, 255, 0.2);
+  border: 1px solid rgba(100, 150, 255, 0.3);
+}
+
+.back-button:hover {
+  background: rgba(100, 150, 255, 0.3);
 }
 
 /* 响应式设计 */

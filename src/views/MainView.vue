@@ -38,7 +38,7 @@
         <p>辅助自动瞄准敌人并开火</p>
       </div>
 
-      <div class="feature-card" @click="navigateTo(username + '/tactics-library')">
+      <div class="feature-card" @click="navigateTo(username + '/searchroad')">
         <div class="feature-icon">🗺️</div>
         <h3>智能寻路</h3>
         <p>根据地图或视觉信息自动探路</p>

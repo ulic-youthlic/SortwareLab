@@ -9,12 +9,16 @@
           <p>精彩瞬间 · 永恒记录 · 随时重温</p>
         </div>
       </div>
-      <div class="user-area">
-        <div class="user-info">
-          <h3>玩家: {{ username }}</h3>
-          <p>已存储 {{ recordings.length }} 个回放</p>
-        </div>
-      </div>
+<!--      <div class="user-area">-->
+<!--        <div class="user-info">-->
+<!--          <h3>玩家: {{ username }}</h3>-->
+<!--          <p>已存储 {{ recordings.length }} 个回放</p>-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <el-button class="back-button" type="primary" circle @click="goToMain">
+        <el-icon><ArrowLeft /></el-icon>
+      </el-button>
     </div>
 
     <!-- 回放控制区域 -->
@@ -77,7 +81,7 @@
 
     <!-- 回放列表 -->
     <div class="recordings-section">
-      <h3><el-icon><Collection /></el-icon> 历史回放记录</h3>
+      <h3><el-icon><Collection /></el-icon> 历史回放记录 （{{ recordings.length }} 个回放）</h3>
 
       <div v-if="recordings.length === 0" class="no-recordings">
         <el-icon><DocumentDelete /></el-icon>
@@ -199,12 +203,13 @@ import {
   Clock, Timer, MapLocation, VideoPlay,
   Check, FolderAdd, FullScreen, Close,
   RefreshLeft, RefreshRight, Delete,
-  DocumentDelete, VideoPause
+  DocumentDelete, VideoPause, ArrowLeft
 } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { useRoute } from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 
 const route = useRoute();
+const router = useRouter();
 const username = ref(route.params.username || '游戏玩家');
 
 // 路径设置
@@ -219,6 +224,10 @@ const recordingStatusText = computed(() => {
   if (!isRecordingEnabled.value) return '录制功能已禁用';
   return isRecording.value ? '正在录制...' : '准备录制';
 });
+
+const goToMain = () => {
+  router.push(`/${username.value}/main`);
+};
 
 // 回放列表
 const recordings = ref([

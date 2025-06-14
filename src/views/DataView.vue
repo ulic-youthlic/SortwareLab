@@ -9,15 +9,19 @@
           <p>详细记录 · 精准分析 · 竞技提升</p>
         </div>
       </div>
-      <div class="user-area">
-        <div class="user-info">
-          <h3>玩家: {{ username }}</h3>
-          <p>最近登录: {{ lastLogin }}</p>
-        </div>
-        <div class="user-avatar">
-          {{ avatarInitials }}
-        </div>
-      </div>
+<!--      <div class="user-area">-->
+<!--        <div class="user-info">-->
+<!--          <h3>玩家: {{ username }}</h3>-->
+<!--          <p>最近登录: {{ lastLogin }}</p>-->
+<!--        </div>-->
+<!--        <div class="user-avatar">-->
+<!--          {{ avatarInitials }}-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <el-button class="back-button" type="primary" circle @click="goToMain">
+        <el-icon><ArrowLeft /></el-icon>
+      </el-button>
     </div>
 
     <!-- 数据筛选区域 -->
@@ -188,12 +192,14 @@
 
 <script setup>
 import { ref, computed, onMounted, nextTick } from 'vue';
-import { useRoute } from 'vue-router';
+import {useRoute, useRouter} from 'vue-router';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 // 获取路由参数中的用户名
 const route = useRoute();
+const router = useRouter();
 const username = ref(route.params.username || '未知用户');
 const lastLogin = ref('2023-10-18 14:30');
 const lastUpdate = ref('2023-10-18 15:45');
@@ -211,6 +217,10 @@ const autoAimFilter = ref('all');
 const currentPage = ref(1);
 const pageSize = ref(10);
 const totalRecords = ref(0);
+
+const goToMain = () => {
+  router.push(`/${username.value}/main`);
+};
 
 // 数据概览
 const summary = ref({

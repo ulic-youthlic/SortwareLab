@@ -1,7 +1,7 @@
 # SortwareLab
 ## 使用element-plus的vue项目
 
-## 第一次迭代中，与后端对接中
+## 第二次迭代中，与后端对接中
 
 ## 代码介绍
 
@@ -88,3 +88,7 @@ http://127.0.0.1:5000/api/game-data/${username.value}
 ### /src/view/HistoryView.vue
 
 新增历史回放功能
+
+### /src/view/SearchRoadView.vue
+
+自动寻路的ui界面（第一版）
